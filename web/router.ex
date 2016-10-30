@@ -17,6 +17,10 @@ defmodule HelloPhoenix.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
+    
+    # 登録画面表示(new)と登録処理(create)
+    get  "/register", RegistrationController, :new
+    post "/register", RegistrationController, :create
   end
 
   # Other scopes may use custom stacks.
