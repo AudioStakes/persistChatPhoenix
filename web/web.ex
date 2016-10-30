@@ -54,6 +54,8 @@ defmodule HelloPhoenix.Web do
       import HelloPhoenix.Router.Helpers
       import HelloPhoenix.ErrorHelpers
       import HelloPhoenix.Gettext
+      # Sessionモジュールのcurrent_userとlogged_in?をWebのviewに追加
+      import HelloPhoenix.Session, only: [current_user: 1, logged_in?: 1]
     end
   end
 
