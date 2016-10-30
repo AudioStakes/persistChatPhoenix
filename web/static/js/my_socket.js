@@ -2,6 +2,19 @@ import {Socket} from "phoenix"
 
 // チャットを行うクラス
 class MySocket {
+  // メッセージを取得
+  all() {
+    $.ajax({
+      url: "/api/messages"
+    }).done((data) => {
+      console.log(data)
+      // 取得したデータをレンダーする
+      data.messages.forEach((message) => this._renderMessage(message))
+    }).fail((data) => {
+      alert("エラーが発生しました")
+      console.log(data)
+    })
+  }
 
   // newのときに呼ばれるコンストラクタ
   constructor() {
@@ -85,6 +98,8 @@ $(
       // app.html.eexでセットしたトークンを使ってソケットに接続
       my_socket.connectSocket("/socket", window.userToken)
       my_socket.connectChannel("rooms:lobby")
+      // メッセージを取得
+      my_socket.all()
     }
   }
 )

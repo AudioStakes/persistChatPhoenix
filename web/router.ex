@@ -41,7 +41,10 @@ defmodule HelloPhoenix.Router do
     end
   end
   # Other scopes may use custom stacks.
-  # scope "/api", HelloPhoenix do
-  #   pipe_through :api
-  # end
+  scope "/api", HelloPhoenix do
+    pipe_through :api
+
+    # メッセージ一覧取得(:index)
+    get  "/messages", MessageController, :index
+  end
 end

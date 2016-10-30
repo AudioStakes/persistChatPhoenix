@@ -7,6 +7,7 @@ defmodule HelloPhoenix.User do
     # passwordフィールドを追加。virtual: trueとすることでデータベースには保存されない
     field :password, :string, virtual: true
 
+    has_many :messages, HelloPhoenix.Message
     timestamps()
   end
 
