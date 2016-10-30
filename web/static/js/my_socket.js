@@ -28,10 +28,17 @@ class MySocket {
   }
 
   // ソケットに接続
-  connectSocket(socket_path) {
+  // トークンを受け取り、トークンがない場合はアラートを表示
+  // new Socketで接続するときにトークンをサーバー側に送る
+  connectSocket(socket_path, token) {
+    if (!token) {
+      alert("ソケットにつなぐにはトークンが必要です")
+      return false
+    }
+    
     // "lib/chat_phoenix/endpoint.ex"　に定義してあるソケットパス("/socket")で
     // ソケットに接続すると、UserSocketに接続されます
-    this.socket = new Socket(socket_path)
+    this.socket = new Socket(socket_path, { params: { token: token } })
     this.socket.connect()
     this.socket.onClose( e => console.log("Closed connection") )
   }
@@ -42,6 +49,8 @@ class MySocket {
     this.channel.join()
       .receive("ok", resp => { // チャネルに入れたときの処理
         console.log("Joined successfully", resp)
+        // Username入力フィールドにユーザのemailを自動的にセットするようにする
+        this.$username.val(resp.email)
       })
       .receive("error", resp => { // チャネルに入れなかった時の処理
         console.log("Unable to join", resp)
@@ -67,10 +76,16 @@ class MySocket {
 
 $(
   () => {
-    // ソケット/チャネルに接続
-    let my_socket = new MySocket()
-    my_socket.connectSocket("/socket")
-    my_socket.connectChannel("rooms:lobby")
+    // userTokenがある場合のみソケットにつなぐ
+    // 本来は、app.html.eexでこのJSを読み込まなくするほうがよさそう
+    // そのためにはJSを分割し、PageControllerのindexアクションで読みこむように
+    // render_existingを行う必要がある
+    if (window.userToken) {
+      let my_socket = new MySocket()
+      // app.html.eexでセットしたトークンを使ってソケットに接続
+      my_socket.connectSocket("/socket", window.userToken)
+      my_socket.connectChannel("rooms:lobby")
+    }
   }
 )
 

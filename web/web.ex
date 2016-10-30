@@ -62,6 +62,9 @@ defmodule HelloPhoenix.Web do
   def router do
     quote do
       use Phoenix.Router
+
+      # Sessionモジュールのcurrent_userとlogged_in?をWebのviewに追加
+      import HelloPhoenix.Session, only: [current_user: 1, logged_in?: 1]
     end
   end
 
