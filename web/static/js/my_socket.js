@@ -24,11 +24,35 @@ class MySocket {
       }
     })
   }
+
+  // ソケットに接続
+  connectSocket(socket_path) {
+    // "lib/chat_phoenix/endpoint.ex"　に定義してあるソケットパス("/socket")で
+    // ソケットに接続すると、UserSocketに接続されます
+    this.socket = new Socket(socket_path)
+    this.socket.connect()
+    this.socket.onClose( e => console.log("Closed connection") )
+  }
+
+  // チャネルに接続
+  connectChannel(chanel_name) {
+    this.channel = this.socket.channel(chanel_name, {})
+    this.channel.join()
+      .receive("ok", resp => { // チャネルに入れたときの処理
+        console.log("Joined successfully", resp)
+      })
+      .receive("error", resp => { // チャネルに入れなかった時の処理
+        console.log("Unable to join", resp)
+      })
+  }
 }
 
 $(
   () => {
-    new MySocket()
+    // ソケット/チャネルに接続
+    let my_socket = new MySocket()
+    my_socket.connectSocket("/socket")
+    my_socket.connectChannel("rooms:lobby")
   }
 )
 
